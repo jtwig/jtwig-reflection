@@ -1,3 +1,11 @@
 language: java
 jdk:
   - oraclejdk7
+
+env:
+  TERM: dumb
+  global:
+    - secure: hiHZjaCovBSIWcwNWC6BJYx2E2LBz4mbeQTAw7SvdowXhKMotJhbOMmHkL78CYZJ0hY4XYybLM7CsZZ8NH0yYsAbXNIYWJTvhsO+E3TksQXrXAG2NI6cxiuAGAXWCKMiMYQ7jcB6NVI3BW+5+nTt1dYq+TwHp26BqGBAaNMIdxU5wVl1p/z670/eujXJazYVN76S3BS10nkwJZ4cwrK2Gcew80JiqPXYjEqdJJSJzdS0TM5cOJNANcB+J3jd+vi0DwdqfnJaEL6pw2F6SCsEWNxF3kxn38zieT/xA1VwGqIGnEg9mw/jMSxwS9hmggA4NpjXsRNrMHOdwbeKAySEsiXP1JRdlXlx4skWn6yf7OupD2jEr6Y66gbBB315XUJy7XP1YnPhpEez3lycB4Zd2j7xk9PYh2XuiocYd/KrVXP9H/sV4hg5TTDXWTjSH6gf8nOLnIwA226BT/VoSWElG1q3CMFlkfLg0h4/7fWgL2Ziil2FZ84aLbfZy5rBkypE38J0TfSd1Q+gVM0Y5+xpyxjoLf6RHv88/CHZeUtIocHSTWLV3sHaUiWGFiclzClyWRjqPnbufZn3Jjofuy6vSOljJqWTy+JmOmawpprIfVWLAh3RpQZA44s429HGB2hy/8l96PC4LG0GEeuJWUh5G2HQofxfToBu+ee/8cpzXEQ="
+
+after_success:
+- gradle jacocoTestReport coveralls
