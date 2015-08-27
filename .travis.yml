@@ -9,4 +9,4 @@ env:
 
 after_success:
  - gradle jacocoTestReport coveralls
- - if [[ $TRAVIS_BRANCH == 'master' ]]; then gradle bintrayUpload ; fi
+ - if [[ $TRAVIS_PULL_REQUEST == "false" ]]; then gradle bintrayUpload ; fi
