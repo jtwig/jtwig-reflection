@@ -48,15 +48,6 @@ public class MethodInvokerTest {
         assertEquals("one hehe", result);
     }
 
-    @Test
-    public void integerConvertedArgument() throws Exception {
-        Collection<BeanMethod> beanMethods = extractor.extract(new MyTest());
-        Object result = invoker.invoke(new MethodInvoker.Request<TestArgument>(beanMethods,
-                asList(new TestArgument(1.1D)))).get().get();
-
-        assertEquals("13", result);
-    }
-
     public static class MyTest {
         public String one (Integer value) {
             return value + "3";

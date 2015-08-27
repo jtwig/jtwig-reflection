@@ -7,7 +7,6 @@ import org.jtwig.reflection.model.java.JavaMethodArgument;
 import org.junit.Test;
 
 import static org.hamcrest.core.Is.is;
-import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertThat;
 import static org.mockito.Mockito.*;
 
@@ -24,29 +23,5 @@ public class InputArgumentValueResolverTest {
         Optional<Value> result = underTest.resolve(methodArgument, context);
 
         assertThat(result.isPresent(), is(false));
-    }
-
-
-    @Test
-    public void resolveWhenConvertFails() throws Exception {
-        when(methodArgument.type()).thenReturn(String.class);
-        when(configuration.getInputParameterResolver().resolve(methodArgument, context, String.class)).thenReturn(Optional.of("one"));
-
-        Optional<Value> result = underTest.resolve(methodArgument, context);
-
-        assertThat(result.isPresent(), is(false));
-    }
-
-
-    @Test
-    public void resolveWhenConvertWorks() throws Exception {
-        when(methodArgument.type()).thenReturn(String.class);
-        when(configuration.getInputParameterResolver().resolve(methodArgument, context, String.class)).thenReturn(Optional.of("hi"));
-        when(configuration.getInputParameterValueResolver().resolve("hi")).thenReturn("one");
-
-        Optional<Value> result = underTest.resolve(methodArgument, context);
-
-        assertThat(result.isPresent(), is(true));
-        assertEquals(result.get().getValue(), "test");
     }
 }
