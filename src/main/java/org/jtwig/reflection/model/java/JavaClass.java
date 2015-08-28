@@ -2,11 +2,13 @@ package org.jtwig.reflection.model.java;
 
 import com.google.common.base.Function;
 import com.google.common.base.Optional;
+import com.google.common.base.Predicate;
 import com.google.common.collect.Collections2;
 import org.jtwig.reflection.model.Value;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
+import java.lang.reflect.Modifier;
 import java.util.Collection;
 
 import static java.util.Arrays.asList;
@@ -54,7 +56,12 @@ public class JavaClass {
     }
 
     public Collection<JavaField> fields () {
-        return Collections2.transform(asList(aClass.getDeclaredFields()), new Function<Field, JavaField>() {
+        return Collections2.transform(Collections2.filter(asList(aClass.getDeclaredFields()), new Predicate<Field>() {
+            @Override
+            public boolean apply(Field input) {
+                return !Modifier.isStatic(input.getModifiers());
+            }
+        }), new Function<Field, JavaField>() {
             @Override
             public JavaField apply(Field input) {
                 return new JavaField(input);

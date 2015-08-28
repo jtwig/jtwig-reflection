@@ -55,10 +55,22 @@ public class JavaMethodTest {
         assertThat(result.isPresent(), is(true));
     }
 
+    @Test
+    public void argumentAnnotation() throws Exception {
+
+
+        underTest = new JavaMethod(TestClass.class.getDeclaredMethod("test", String.class));
+
+        Optional<Deprecated> result = underTest.argumentAnnotation(0, Deprecated.class);
+
+        assertThat(result.isPresent(), is(true));
+
+    }
+
     public static class TestClass {
         @Factory
         public String test () { return "one"; }
-        public String test (String arg) { return arg; }
+        public String test (@Deprecated String arg) { return arg; }
         public String a (String... arg) { return "a"; }
     }
 }

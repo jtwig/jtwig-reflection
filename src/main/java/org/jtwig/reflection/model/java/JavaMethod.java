@@ -67,5 +67,4 @@ public class JavaMethod {
     public String name () {
         return method.getName();
     }
-
 }
