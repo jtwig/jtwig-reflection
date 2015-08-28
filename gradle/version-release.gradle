@@ -9,7 +9,7 @@ def releaseVersion () {
     if (buildNumber == null || buildNumber.isEmpty()) {
         buildNumber = "SNAPSHOT"
     }
-    return "1.0." + buildNumber
+    return "1." + buildNumber
 }
 
 configurations {
