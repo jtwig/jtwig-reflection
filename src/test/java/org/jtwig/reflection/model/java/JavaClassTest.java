@@ -40,10 +40,24 @@ public class JavaClassTest {
     }
 
     @Test
+    public void methodsWithSuperClass() throws Exception {
+        Collection<JavaMethod> result = new JavaClass(ExtendedTestClass.class).methods();
+
+        assertTrue(!result.isEmpty());
+    }
+
+    @Test
     public void fields() throws Exception {
         Collection<JavaField> result = new JavaClass(TestClass.class).fields();
 
         assertThat(result, hasSize(1));
+    }
+
+    @Test
+    public void fieldsWithSuperClass() throws Exception {
+        Collection<JavaField> result = new JavaClass(ExtendedTestClass.class).fields();
+
+        assertThat(result, hasSize(2));
     }
 
     public static class TestClass {
@@ -54,4 +68,13 @@ public class JavaClassTest {
             return "world";
         }
     }
+
+    public static class ExtendedTestClass extends TestClass {
+        private String extendedField = "test";
+
+        public String extendedHello() {
+            return "world";
+        }
+    }
+
 }
