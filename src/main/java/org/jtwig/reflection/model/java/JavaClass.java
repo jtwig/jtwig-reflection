@@ -9,7 +9,9 @@ import org.jtwig.reflection.model.Value;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
+import java.util.ArrayList;
 import java.util.Collection;
+import java.util.List;
 
 import static java.util.Arrays.asList;
 
@@ -38,8 +40,12 @@ public class JavaClass {
     }
 
     public Collection<JavaMethod> methods () {
-        Method[] declaredMethods = aClass.getDeclaredMethods();
-        return Collections2.transform(asList(declaredMethods), new Function<Method, JavaMethod>() {
+        Class<?> parent = this.aClass;
+        List<Method> methods = new ArrayList<>();
+        do {
+            methods.addAll(asList(parent.getDeclaredMethods()));
+        } while ((parent = parent.getSuperclass()) != Object.class);
+        return Collections2.transform(methods, new Function<Method, JavaMethod>() {
             @Override
             public JavaMethod apply(Method input) {
                 return new JavaMethod(input);
@@ -48,15 +54,24 @@ public class JavaClass {
     }
 
     public Optional<JavaField> field (String name) {
-        try {
-            return Optional.of(new JavaField(aClass.getDeclaredField(name)));
-        } catch (NoSuchFieldException e) {
-            return Optional.absent();
-        }
+        Class<?> parent = this.aClass;
+        do {
+            try {
+                return Optional.of(new JavaField(parent.getDeclaredField(name)));
+            } catch (NoSuchFieldException ex) {
+                //
+            }
+        } while((parent = parent.getSuperclass()) != Object.class);
+        return Optional.absent();
     }
 
     public Collection<JavaField> fields () {
-        return Collections2.transform(Collections2.filter(asList(aClass.getDeclaredFields()), new Predicate<Field>() {
+        Class<?> parent = this.aClass;
+        List<Field> fields = new ArrayList<>();
+        do {
+            fields.addAll(asList(parent.getDeclaredFields()));
+        } while ((parent = parent.getSuperclass()) != Object.class);
+        return Collections2.transform(Collections2.filter(fields, new Predicate<Field>() {
             @Override
             public boolean apply(Field input) {
                 return !Modifier.isStatic(input.getModifiers());
