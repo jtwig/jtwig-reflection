@@ -3,28 +3,26 @@ package org.jtwig.reflection.model.java;
 import java.lang.reflect.Field;
 
 public class JavaField {
-    private final Field original;
+    private final Field field;
 
     public JavaField(Field original) {
-        this.original = original;
+        this.field = original;
+        this.field.setAccessible(true);
     }
 
     public Object value (Object instance) throws IllegalAccessException {
-        return value(instance, false);
+        return field.get(instance);
     }
 
     public String name () {
-        return original.getName();
+        return field.getName();
     }
 
     public Class type () {
-        return original.getType();
+        return field.getType();
     }
 
-    public Object value (Object instance, boolean tryPrivate) throws IllegalAccessException {
-        if (tryPrivate) {
-            original.setAccessible(true);
-        }
-        return original.get(instance);
+    public Field getNative () {
+        return field;
     }
 }

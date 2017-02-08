@@ -30,14 +30,6 @@ public class MethodInvokerTest {
             .withInputParameterValueResolver(new TestArgumentValueResolver())
             .build();
 
-    @Test
-    public void oneArgument() throws Exception {
-        Collection<BeanMethod> beanMethods = extractor.extract(new MyTest());
-        Object result = invoker.invoke(new MethodInvoker.Request<TestArgument>(beanMethods,
-                asList(new TestArgument("one")))).get().get();
-
-        assertEquals("one3", result);
-    }
 
     @Test
     public void twoArguments() throws Exception {
