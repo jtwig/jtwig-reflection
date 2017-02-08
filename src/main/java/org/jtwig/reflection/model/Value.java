@@ -2,6 +2,9 @@ package org.jtwig.reflection.model;
 
 import org.jtwig.reflection.model.java.JavaClass;
 
+import static org.jtwig.reflection.model.java.JavaClassManager.classManager;
+
+
 public class Value {
     private final Object value;
 
@@ -18,10 +21,7 @@ public class Value {
     }
 
     public JavaClass type () {
-        if (value == null) {
-            return null;
-        } else {
-            return new JavaClass(value.getClass());
-        }
+        if (value == null) return null;
+        return classManager().metadata(value.getClass());
     }
 }

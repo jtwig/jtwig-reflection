@@ -1,86 +1,69 @@
 package org.jtwig.reflection.model.java;
 
-import com.google.common.base.Function;
 import com.google.common.base.Optional;
-import com.google.common.base.Predicate;
-import com.google.common.collect.Collections2;
-import org.jtwig.reflection.model.Value;
 
-import java.lang.reflect.Field;
-import java.lang.reflect.Method;
-import java.lang.reflect.Modifier;
-import java.util.ArrayList;
 import java.util.Collection;
-import java.util.List;
-
-import static java.util.Arrays.asList;
+import java.util.Collections;
+import java.util.Map;
 
 public class JavaClass {
-    private final Class aClass;
+    private final Class nativeType;
+    private final Map<String, JavaConstant> constants;
+    private final Map<String, JavaField> fields;
+    private final Map<String, JavaMethods> methodsByName;
 
-    public JavaClass(Class aClass) {
-        this.aClass = aClass;
+    public JavaClass(Class nativeType, Map<String, JavaConstant> constants, Map<String, JavaField> fields, Map<String, JavaMethods> methodsByName) {
+        this.nativeType = nativeType;
+        this.constants = constants;
+        this.fields = fields;
+        this.methodsByName = methodsByName;
     }
 
-    public Optional<Value> constant (String name) {
-        try {
-            Field declaredField = aClass.getDeclaredField(name);
-            if (declaredField == null) {
-                return Optional.absent();
-            } else {
-                try {
-                    return Optional.of(new Value(declaredField.get(null)));
-                } catch (IllegalAccessException e) {
-                    return Optional.absent();
-                }
-            }
-        } catch (NoSuchFieldException e) {
-            return Optional.absent();
-        }
+    public Optional<JavaConstant> constant (String name) {
+        return Optional.fromNullable(constants.get(name));
     }
 
-    public Collection<JavaMethod> methods () {
-        Class<?> parent = this.aClass;
-        List<Method> methods = new ArrayList<>();
-        do {
-            methods.addAll(asList(parent.getDeclaredMethods()));
-        } while ((parent = parent.getSuperclass()) != Object.class);
-        return Collections2.transform(methods, new Function<Method, JavaMethod>() {
-            @Override
-            public JavaMethod apply(Method input) {
-                return new JavaMethod(input);
-            }
-        });
+    public Collection<JavaConstant> constants () {
+        return constants.values();
     }
 
     public Optional<JavaField> field (String name) {
-        Class<?> parent = this.aClass;
-        do {
-            try {
-                return Optional.of(new JavaField(parent.getDeclaredField(name)));
-            } catch (NoSuchFieldException ex) {
-                //
-            }
-        } while((parent = parent.getSuperclass()) != Object.class);
-        return Optional.absent();
+        return Optional.fromNullable(fields.get(name));
     }
 
     public Collection<JavaField> fields () {
-        Class<?> parent = this.aClass;
-        List<Field> fields = new ArrayList<>();
-        do {
-            fields.addAll(asList(parent.getDeclaredFields()));
-        } while ((parent = parent.getSuperclass()) != Object.class);
-        return Collections2.transform(Collections2.filter(fields, new Predicate<Field>() {
-            @Override
-            public boolean apply(Field input) {
-                return !Modifier.isStatic(input.getModifiers());
+        return fields.values();
+    }
+
+    public JavaMethods method (String name) {
+        return Optional.fromNullable(methodsByName.get(name))
+                .or(new JavaMethods(Collections.<MethodSignature, JavaMethod>emptyMap()));
+    }
+
+
+    public void merge (JavaClass origin) {
+        for (Map.Entry<String, JavaMethods> entry : origin.methodsByName.entrySet()) {
+            if (methodsByName.containsKey(entry.getKey())) {
+                methodsByName.get(entry.getKey()).merge(origin.methodsByName.get(entry.getKey()));
+            } else {
+                methodsByName.put(entry.getKey(), entry.getValue());
             }
-        }), new Function<Field, JavaField>() {
-            @Override
-            public JavaField apply(Field input) {
-                return new JavaField(input);
+        }
+
+        for (Map.Entry<String, JavaField> entry : origin.fields.entrySet()) {
+            if (!fields.containsKey(entry.getKey())) {
+                fields.put(entry.getKey(), entry.getValue());
             }
-        });
+        }
+
+        for (Map.Entry<String, JavaConstant> entry : constants.entrySet()) {
+            if (!constants.containsKey(entry.getKey())) {
+                constants.put(entry.getKey(), entry.getValue());
+            }
+        }
+    }
+
+    public Class getNative() {
+        return nativeType;
     }
 }

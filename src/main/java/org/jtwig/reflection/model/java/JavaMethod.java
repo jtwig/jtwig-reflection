@@ -14,6 +14,7 @@ public class JavaMethod {
 
     public JavaMethod(Method method) {
         this.method = method;
+        this.method.setAccessible(true);
     }
 
     public List<JavaMethodArgument> arguments() {
@@ -66,5 +67,9 @@ public class JavaMethod {
 
     public String name () {
         return method.getName();
+    }
+
+    public Method getNative () {
+        return method;
     }
 }
