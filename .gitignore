@@ -8,3 +8,6 @@
 gradle/wrapper
 gradlew
 gradlew.bat
+
+# Maven
+pom.xml
