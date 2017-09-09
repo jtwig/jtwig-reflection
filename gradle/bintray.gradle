@@ -36,7 +36,7 @@ bintray {
     publish = true
 
     pkg {
-        repo = 'maven'
+        repo = isRelease() ? 'maven' : 'snapshots'
         name = project.name
         userOrg = 'jtwig'
 
