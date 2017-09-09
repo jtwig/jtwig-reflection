@@ -39,6 +39,7 @@ bintray {
         repo = isRelease() ? 'maven' : 'snapshots'
         name = project.name
         userOrg = 'jtwig'
+        licenses = ['Apache-2.0']
 
         version {
             gpg {
