@@ -5,6 +5,7 @@ import com.google.common.base.Optional;
 import com.google.common.base.Predicate;
 import org.junit.Test;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import static java.util.Arrays.asList;
@@ -27,7 +28,7 @@ public class Lists2Test {
     }
     @Test
     public void filter() throws Exception {
-        List<Integer> inputList = asList(1);
+        List<Integer> inputList = asList(1, 2);
 
         List<Integer> result = Lists2.filter(inputList, new Predicate<Integer>() {
             @Override
@@ -36,7 +37,7 @@ public class Lists2Test {
             }
         });
 
-        assertThat(result.size(), is(0));
+        assertThat(result.size(), is(1));
     }
 
     @Test
@@ -52,6 +53,22 @@ public class Lists2Test {
 
         assertThat(result.isPresent(), is(true));
         assertThat(result.get(), is(1));
+    }
+
+
+    @Test
+    public void findNull() throws Exception {
+        List<Object> inputList = new ArrayList<>();
+        inputList.add(null);
+
+        Optional<Object> result = Lists2.find(inputList, new Predicate<Object>() {
+            @Override
+            public boolean apply(Object input) {
+                return true;
+            }
+        });
+
+        assertThat(result.isPresent(), is(false));
     }
 
 
