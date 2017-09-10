@@ -18,4 +18,4 @@ after_success:
  - if [ ! -z "$TRAVIS_TAG" ]; then ./gradlew bintrayUpload -PjtwigVersion="$TRAVIS_TAG"; fi
 
 notifications:
-  webhooks: http://jtwig.org/rest/travis
+ webhooks: http://jtwig.org/rest/travis
