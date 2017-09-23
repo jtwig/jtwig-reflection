@@ -17,6 +17,11 @@ apply from: 'gradle/bintray.gradle'
 sourceCompatibility = 1.7
 targetCompatibility = 1.7
 
+compileTestJava {
+    sourceCompatibility = 1.8
+    targetCompatibility = 1.8
+}
+
 repositories {
     mavenCentral()
     mavenLocal()
