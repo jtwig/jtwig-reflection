@@ -3,8 +3,11 @@ package org.jtwig.reflection.model.java;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
+import java.util.Collections;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Map;
+import java.util.Set;
 
 public class JavaClassFactory {
     public JavaClass create(Class type) {
@@ -30,7 +33,12 @@ public class JavaClassFactory {
     }
 
     private void extractMethods(Class type, Map<String, Map<MethodSignature, JavaMethod>> methodsByName) {
-        for (Method method : type.getDeclaredMethods()) {
+        Set<Method> methods = new HashSet<>();
+
+        Collections.addAll(methods, type.getMethods());
+        Collections.addAll(methods, type.getDeclaredMethods());
+
+        for(Method method : methods) {
             if (!Modifier.isStatic(method.getModifiers())) {
                 JavaMethod javaMethod = new JavaMethod(method);
 
